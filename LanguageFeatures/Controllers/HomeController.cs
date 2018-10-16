@@ -1,6 +1,7 @@
 ﻿using LanguageFeatures.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System;
 
 namespace LanguageFeatures.Controllers
 {
@@ -19,6 +20,10 @@ namespace LanguageFeatures.Controllers
             //}
 
             //return View(results);
+            bool FilterByPrice(Product p)
+            {
+                return (p?.Price ?? 0) >= 20;
+            }
 
             ShoppingCart cart = new ShoppingCart { Products = Product.GetProducts() };
             Product[] productArray =
@@ -30,11 +35,15 @@ namespace LanguageFeatures.Controllers
             };
 
             //decimal cartTotal = cart.TotalPrices();
-            decimal arrayTotal = productArray.FilterByPrice(20).TotalPrices();
+            //decimal arrayTotal = productArray.FilterByPrice(20).TotalPrices();
 
-            return View("Index", new string[] {
-                //$"Cart Total: {cartTotal:C2}",
-                $"Array Total: {arrayTotal:C2}"
+            decimal priceFilterTotal = productArray.FilterByPrice(20).TotalPrices();
+            decimal nameFilterTotal = productArray.FilterByName('S').TotalPrices();
+
+            return View("Index", new string[]
+            {
+                $"Price Total: {priceFilterTotal:C2}",
+                $"Name Total: {nameFilterTotal:C2}"
             });
         }
     }
